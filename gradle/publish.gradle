@@ -1,0 +1,24 @@
+publishing {
+    publications {
+        gradleProjectWriter(MavenPublication) {
+            version project.version
+            artifactId = "${project.group}.project-writer.gradle.plugin"
+            groupId = "${project.group}.project-writer"
+            pom.withXml {
+                def root = asNode()
+                def dependency = root.appendNode('dependencies').appendNode('dependency')
+                dependency.appendNode('groupId', project.group)
+                dependency.appendNode('artifactId', project.name)
+                dependency.appendNode('version', project.version)
+            }
+        }
+    }
+}
+
+task publishPluginToMavenLocal {
+    description = 'Publishes the plugin and the jar to maven local'
+    group = 'Publishing'
+    dependsOn build
+    dependsOn publishToMavenLocal
+    dependsOn publishGradleProjectWriterPublicationToMavenLocal
+}
