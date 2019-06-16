@@ -16,12 +16,20 @@ class PluginSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments(':init')
+                    .withArguments(':gradle-init')
+
+        and: 'the root project applies the plugin'
+            def build = tempFolder.newFile('build.gradle')
+            build << """
+                plugins {
+                    id 'com.github.slopeoak.gradle-init'
+                }
+            """
 
         when: 'the init task is run'
             def outcome = plugin.build()
 
         then: 'the task was successful'
-            outcome.task(':init').outcome == TaskOutcome.SUCCESS
+            outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
     }
 }

@@ -34,4 +34,27 @@ class CreatesGradleProjectSpec extends Specification {
                 new File(tempFolder.root, '/subFolder/build.gradle').exists()
             }
     }
+
+    def "Does not overwrite existing build gradle files"() {
+        given: 'the plugin has been configured for a folder'
+            def plugin = GradleRunner.create()
+                    .withPluginClasspath()
+                    .withProjectDir(tempFolder.root)
+                    .withArguments(':gradle-init')
+
+        and: 'the folder contains the test data'
+            FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/skipsIfItAlreadyExists'), tempFolder.root)
+
+        when: 'the init task is run'
+            def outcome = plugin.build()
+
+        then: 'the task was successful'
+            outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
+
+        and: 'a build.gradle file exists in both folders'
+            verifyAll {
+                new File(tempFolder.root, 'build.gradle').readLines().size() == 3
+                new File(tempFolder.root, '/subFolder/build.gradle').text == "// Some text"
+            }
+    }
 }
