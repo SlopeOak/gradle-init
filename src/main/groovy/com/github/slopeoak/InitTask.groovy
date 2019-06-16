@@ -23,7 +23,7 @@ class InitTask extends DefaultTask {
         root.traverse(type: FileType.FILES) {
             if (it.name == 'pom.xml') {
                 def newBuild = new File(it.parent, 'build.gradle')
-                if (!newBuild.exists()) {
+                if (project.extensions.'gradleInit'.overwrite || !newBuild.exists()) {
                     newBuild.write('')
                 }
             }

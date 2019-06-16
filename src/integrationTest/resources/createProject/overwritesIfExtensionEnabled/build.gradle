@@ -1,0 +1,7 @@
+plugins {
+    id 'com.github.slopeoak.gradle-init'
+}
+
+gradleInit {
+    overwrite = true
+}
