@@ -7,6 +7,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.PendingFeature
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class CreatesGradleProjectSpec extends Specification {
 
@@ -83,17 +84,28 @@ class CreatesGradleProjectSpec extends Specification {
     }
 
     @PendingFeature
-    def "Does not overwrite the root file"() {} // I assume this would be a bad idea? It would erase the plugin... Is that a bad thing?
+    def "Does not overwrite the root file"() {}
+    // I assume this would be a bad idea? It would erase the plugin... Is that a bad thing?
 
-    def "Skip folders under src"() {
+    @Unroll
+    def "Skip folders under #skipFolder for path #path"() {
         given: 'the plugin has been configured for a folder'
+            def projectRoot = tempFolder.root
+            def buildFile = tempFolder.newFile('build.gradle')
+            buildFile << """
+                plugins {
+                    id 'com.github.slopeoak.gradle-init'
+                }
+            """
+
+            def testFolder = tempFolder.newFolder(path)
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
-                    .withProjectDir(tempFolder.root)
-                    .withArguments(':gradle-init')
+                    .withProjectDir(projectRoot)
+                    .withArguments('--info', ':gradle-init')
 
         and: 'the folder contains the test data'
-            FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/skipPomsInSrc'), tempFolder.root)
+            FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/skipPomsInSrc'), testFolder)
 
         when: 'the init task is run'
             def outcome = plugin.build()
@@ -102,9 +114,14 @@ class CreatesGradleProjectSpec extends Specification {
             outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
 
         and: 'a build.gradle file exists in both folders'
-            verifyAll {
-                !new File(tempFolder.root, '/src/build.gradle').exists()
-                !new File(tempFolder.root, '/subFolder/src/build.gradle').exists()
-            }
+            !new File(tempFolder.root, "${path.join('/')}/build.gradle").exists()
+
+        where:
+            skipFolder | path
+            'src'      | [skipFolder] as String[]
+            'src'      | ['someOtherFolder', skipFolder] as String[]
+            'src'      | ['skip', 'at', 'the', 'end', 'of', 'a', 'long', 'ish', 'path', skipFolder] as String[]
+            'src'      | [skipFolder, 'at', 'the', 'beginning', 'of', 'a', 'long', 'ish', 'path'] as String[]
+            'src'      | ['skip', 'in', 'the', 'middle', skipFolder, 'of', 'a', 'long', 'ish', 'path'] as String[]
     }
 }

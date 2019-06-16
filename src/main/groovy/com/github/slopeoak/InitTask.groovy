@@ -29,6 +29,7 @@ class InitTask extends DefaultTask {
     }
 
     def createBuildGradle(File parent) {
+        project.logger.info("Writing project files under $parent")
         def buildFile = new File(parent, 'build.gradle')
         if (project.extensions.'gradleInit'.overwrite || !buildFile.exists()) {
             project.logger.info("Creating a build.gradle file at $parent/build.gradle")
@@ -37,6 +38,7 @@ class InitTask extends DefaultTask {
     }
 
     def createPropertiesFile(File parent) {
+        project.logger.info("Writing properties files under $parent")
         def propertiesFile = new File(parent, 'gradle.properties')
         def relativeProjectName = "${folderProjectName(project.rootDir, parent)}"
         project.logger.debug("Relative project from $project.rootDir to $parent is $relativeProjectName")
