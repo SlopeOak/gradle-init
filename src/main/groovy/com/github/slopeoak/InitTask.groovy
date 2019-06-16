@@ -22,11 +22,33 @@ class InitTask extends DefaultTask {
 
         root.traverse(type: FileType.FILES) {
             if (it.name == 'pom.xml') {
-                def newBuild = new File(it.parent, 'build.gradle')
-                if (project.extensions.'gradleInit'.overwrite || !newBuild.exists()) {
-                    newBuild.write('')
-                }
+                createBuildGradle(it.parentFile)
+                createPropertiesFile(it.parentFile)
             }
         }
+    }
+
+    def createBuildGradle(File parent) {
+        def buildFile = new File(parent, 'build.gradle')
+        if (project.extensions.'gradleInit'.overwrite || !buildFile.exists()) {
+            buildFile.write('')
+        }
+    }
+
+    def createPropertiesFile(File parent) {
+        def propertiesFile = new File(parent, 'gradle.properties')
+        def relativeProjectName = "${folderProjectName(project.rootDir, parent)}"
+        project.logger.info("Relative project from $project.rootDir to $parent is $relativeProjectName")
+        propertiesFile.write("projectName=" + relativeProjectName)
+    }
+
+    static folderProjectName(File root, File projectDir) {
+        def relativePath = root.relativePath(projectDir)
+        StringBuilder builder = new StringBuilder()
+        relativePath.split('/').each {
+            builder.append(':')
+            builder.append(it)
+        }
+        builder.toString()
     }
 }
