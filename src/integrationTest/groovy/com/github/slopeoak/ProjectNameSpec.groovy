@@ -41,7 +41,7 @@ class ProjectNameSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments('--info', ':gradle-init')
+                    .withArguments(':gradle-init')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/inRootDir'), tempFolder.root)
@@ -55,11 +55,13 @@ class ProjectNameSpec extends Specification {
         and: 'the name is in the gradle.properties file'
             verifyAll {
                 def root = new File(tempFolder.root, 'gradle.properties')
+                root.exists()
                 root.readLines().any {
                     it == 'projectName=:'
                 }
 
                 def subFolder = new File(tempFolder.root, 'subFolder/gradle.properties')
+                subFolder.exists()
                 subFolder.readLines().any {
                     it == 'projectName=:subFolder'
                 }
@@ -67,7 +69,5 @@ class ProjectNameSpec extends Specification {
     }
 
     @PendingFeature
-    def "Each gradle properties file contains a name based on the pom name if the extension property is set to POM"() {
-
-    }
+    def "Each gradle properties file contains a name based on the pom name if the extension property is set to POM"() {}
 }

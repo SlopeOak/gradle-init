@@ -20,7 +20,7 @@ class InitTask extends DefaultTask {
     def init() {
         def root = project.rootDir
 
-        root.traverse(type: FileType.FILES) {
+        root.traverse(type: FileType.FILES, excludeFilter: ~/.*src.*/) {
             if (it.name == 'pom.xml') {
                 createBuildGradle(it.parentFile)
                 createPropertiesFile(it.parentFile)
@@ -31,6 +31,7 @@ class InitTask extends DefaultTask {
     def createBuildGradle(File parent) {
         def buildFile = new File(parent, 'build.gradle')
         if (project.extensions.'gradleInit'.overwrite || !buildFile.exists()) {
+            project.logger.info("Creating a build.gradle file at $parent/build.gradle")
             buildFile.write('')
         }
     }
@@ -38,7 +39,9 @@ class InitTask extends DefaultTask {
     def createPropertiesFile(File parent) {
         def propertiesFile = new File(parent, 'gradle.properties')
         def relativeProjectName = "${folderProjectName(project.rootDir, parent)}"
-        project.logger.info("Relative project from $project.rootDir to $parent is $relativeProjectName")
+        project.logger.debug("Relative project from $project.rootDir to $parent is $relativeProjectName")
+
+        project.logger.info("Creating a gradle.properties file at $parent/gradle.properties")
         propertiesFile.write("projectName=" + relativeProjectName)
     }
 

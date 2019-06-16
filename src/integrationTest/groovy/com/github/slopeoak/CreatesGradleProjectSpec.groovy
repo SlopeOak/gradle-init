@@ -18,7 +18,7 @@ class CreatesGradleProjectSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments(':gradle-init')
+                    .withArguments('--debug', ':gradle-init')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/inRootDir'), tempFolder.root)
@@ -41,7 +41,7 @@ class CreatesGradleProjectSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments(':gradle-init')
+                    .withArguments('--debug', ':gradle-init')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/skipsIfItAlreadyExists'), tempFolder.root)
@@ -64,7 +64,7 @@ class CreatesGradleProjectSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments(':gradle-init')
+                    .withArguments('--debug', ':gradle-init')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/overwritesIfExtensionEnabled'), tempFolder.root)
@@ -84,4 +84,27 @@ class CreatesGradleProjectSpec extends Specification {
 
     @PendingFeature
     def "Does not overwrite the root file"() {} // I assume this would be a bad idea? It would erase the plugin... Is that a bad thing?
+
+    def "Skip folders under src"() {
+        given: 'the plugin has been configured for a folder'
+            def plugin = GradleRunner.create()
+                    .withPluginClasspath()
+                    .withProjectDir(tempFolder.root)
+                    .withArguments(':gradle-init')
+
+        and: 'the folder contains the test data'
+            FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/skipPomsInSrc'), tempFolder.root)
+
+        when: 'the init task is run'
+            def outcome = plugin.build()
+
+        then: 'the task was successful'
+            outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
+
+        and: 'a build.gradle file exists in both folders'
+            verifyAll {
+                !new File(tempFolder.root, '/src/build.gradle').exists()
+                !new File(tempFolder.root, '/subFolder/src/build.gradle').exists()
+            }
+    }
 }
