@@ -6,7 +6,7 @@ import org.gradle.api.Project
 class GradleInit implements Plugin<Project> {
 
     @Override
-    void apply(Project target) {
-        target.tasks.create('init', InitTask)
+    void apply(Project project) {
+        project.tasks.create('gradle-init', InitTask, project)
     }
 }
