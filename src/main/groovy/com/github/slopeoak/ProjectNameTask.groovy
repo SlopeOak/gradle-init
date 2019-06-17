@@ -26,7 +26,6 @@ class ProjectNameTask extends DefaultTask {
         root.traverse(type: FileType.FILES, excludeFilter: ~$/.*[\\|/](src|build|target|.git|.gradle)[\\|/].*/$) {
             if (it.name == 'pom.xml') {
                 def pom = new MavenXpp3Reader().read(it.newReader())
-//                def pom = new MavenXpp3Reader().read(it..newReader())
 
                 def projectName = folderProjectName(project.rootDir, it.parentFile)
                 def mavenName = "${pom.groupId}:${pom.artifactId}".toString()
