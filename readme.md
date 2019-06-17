@@ -1,6 +1,8 @@
 # Gradle init
 An alternative approach to the official gradle init script.
 
+Find this plugin in the [Gradle plugins repository](https://plugins.gradle.org/plugin/com.github.slopeoak.gradle-init)!
+
 ## What this project is about
 The goal of this project is to use gradle to create a gradle project from a maven project. It operates similar to 
 `gradle init` but is more task oriented. The goal of this plugin is to apply `gradle-init` at the project root level
