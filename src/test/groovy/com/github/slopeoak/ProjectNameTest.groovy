@@ -46,8 +46,8 @@ class ProjectNameTest extends Specification {
             def projectMap = project.projectMap
 
             projectMap == [
-                    'com.github.slopeoak:createProject-inRootDir': ':',
-                    'com.github.slopeoak:createProject-subFolder': ':subFolder'
+                    'com.github.slopeoak:createProject-inRootDir': [name: ':', path: ''],
+                    'com.github.slopeoak:createProject-subFolder': [name: ':subFolder', path: 'subFolder']
             ]
     }
 
@@ -73,11 +73,58 @@ class ProjectNameTest extends Specification {
         then: 'the child project has access to the same state'
             verifyAll {
                 subproject.projectMap == [
-                        'com.github.slopeoak:createProject-inRootDir': ':',
-                        'com.github.slopeoak:createProject-subFolder': ':subFolder'
+                        'com.github.slopeoak:createProject-inRootDir': [name: ':', path: ''],
+                        'com.github.slopeoak:createProject-subFolder': [name: ':subFolder', path: 'subFolder']
                 ]
 
                 project.projectMap == subproject.projectMap
             }
+    }
+
+    @Unroll
+    def "ProjectMap contains the name #name and the path #mappedPath"() {
+        given: 'there is test data in the folder'
+            def rootBuild = tempFolder.newFile('build.gradle')
+            rootBuild << """
+                plugins {
+                    id 'com.github.slopeoak.gradle-init'
+                }
+            """
+
+            def testFolder = tempFolder.newFolder(path)
+            def buildFile = new File(testFolder, 'build.gradle')
+            buildFile << ''
+
+            def pom = new File(testFolder, 'pom.xml')
+            pom << """
+                <project>
+                    <modelVersion>4.0.0</modelVersion>
+                    <groupId>$groupId</groupId>
+                    <artifactId>$artifactId</artifactId>
+                    <version>0.0.1-SNAPSHOT</version>
+                </project>
+            """
+
+        and: 'create a project in the test directory'
+            def project = ProjectBuilder.builder()
+                    .withProjectDir(tempFolder.root)
+                    .build()
+
+        when: 'the project names task is executed on the parent'
+            def projectNamesTask = project.tasks.create('projectNames', ProjectNameTask, project)
+            projectNamesTask.generateProjectNames()
+
+        then:
+            verifyAll {
+                project.projectMap.size() == 1
+                project.projectMap.containsKey("$groupId:$artifactId".toString())
+                project.projectMap == [("$groupId:$artifactId".toString()): [name: name, path: mappedPath]]
+            }
+
+        where:
+            path                                          | groupId                  | artifactId                   || name                       | mappedPath
+            ['a', 'b', 'c'] as String[]                   | 'group'                  | 'artifact'                   || ":a:b:c"                   | 'a/b/c'
+            ['folder1', 'folder2', 'folder3'] as String[] | 'com.github.slopeoak'    | 'some-gradle-thing'          || ":folder1:folder2:folder3" | 'folder1/folder2/folder3'
+            1..100 as String[]                            | 'long.folder.path.thing' | 'thats-some-sweet-test-data' || ":${path.join(':')}"       | path.join('/')
     }
 }

@@ -31,7 +31,7 @@ class ProjectNameTask extends DefaultTask {
                 def projectName = folderProjectName(project.rootDir, it.parentFile)
                 def mavenName = "${pom.groupId}:${pom.artifactId}".toString()
 
-                projectMap[mavenName] = projectName
+                projectMap[mavenName] = [name: projectName, path: project.rootDir.relativePath(it.parentFile)]
 
                 project.logger.debug("Storing project name $mavenName -> $projectName")
             }

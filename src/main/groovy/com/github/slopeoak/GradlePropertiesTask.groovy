@@ -37,7 +37,7 @@ class GradlePropertiesTask extends DefaultTask {
         def pom = new MavenXpp3Reader().read(new File(parent, 'pom.xml').newReader())
 
         project.logger.debug("ProjectMap: $project.projectMap")
-        def relativeProjectName = project.projectMap["${pom.groupId}:${pom.artifactId}".toString()]
+        def relativeProjectName = project.projectMap["${pom.groupId}:${pom.artifactId}".toString()].name
         project.logger.debug("Relative project for ${"${pom.groupId}:${pom.artifactId}".toString()} is $relativeProjectName")
 
         project.logger.info("Creating a gradle.properties file at $parent/gradle.properties")
