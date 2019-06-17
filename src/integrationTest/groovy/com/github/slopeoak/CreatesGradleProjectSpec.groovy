@@ -123,5 +123,9 @@ class CreatesGradleProjectSpec extends Specification {
             'src'      | ['skip', 'at', 'the', 'end', 'of', 'a', 'long', 'ish', 'path', skipFolder] as String[]
             'src'      | [skipFolder, 'at', 'the', 'beginning', 'of', 'a', 'long', 'ish', 'path'] as String[]
             'src'      | ['skip', 'in', 'the', 'middle', skipFolder, 'of', 'a', 'long', 'ish', 'path'] as String[]
+            'build'    | [skipFolder] as String[]
+            'target'   | [skipFolder] as String[]
+            '.git'     | [skipFolder] as String[]
+            '.gradle'  | [skipFolder] as String[]
     }
 }

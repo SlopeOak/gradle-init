@@ -20,7 +20,7 @@ class InitTask extends DefaultTask {
     def init() {
         def root = project.rootDir
 
-        root.traverse(type: FileType.FILES, excludeFilter: ~/.*src.*/) {
+        root.traverse(type: FileType.FILES, excludeFilter: ~$/.*[\\|/](src|build|target|.git|.gradle)[\\|/].*/$) {
             if (it.name == 'pom.xml') {
                 createBuildGradle(it.parentFile)
                 createPropertiesFile(it.parentFile)
