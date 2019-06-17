@@ -13,6 +13,9 @@ class InitTask extends DefaultTask {
     @Inject
     InitTask(Project project) {
         this.project = project
+        description = "Initialise a gradle project, creating empty build.gradle files and gradle.properties files for " +
+                "the folders containing a pom.xml file."
+        group = 'Gradle init'
 
         project.tasks.create('project-names', ProjectNameTask, project)
         def buildGradleTask = project.tasks.create('createBuildGradle', BuildGradleTask, project)

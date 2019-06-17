@@ -2,8 +2,8 @@ publishing {
     publications {
         gradleProjectWriter(MavenPublication) {
             version project.version
-            artifactId = "${project.group}.project-writer.gradle.plugin"
-            groupId = "${project.group}.project-writer"
+            artifactId = "${project.group}.${project.name}.gradle.plugin"
+            groupId = "${project.group}.${project.name}"
             pom.withXml {
                 def root = asNode()
                 def dependency = root.appendNode('dependencies').appendNode('dependency')
