@@ -14,6 +14,7 @@ class InitTask extends DefaultTask {
     InitTask(Project project) {
         this.project = project
 
+        project.tasks.create('project-names', ProjectNameTask, project)
         def buildGradleTask = project.tasks.create('createBuildGradle', BuildGradleTask, project)
         def gradlePropertiesTask = project.tasks.create('createGradleProperties', GradlePropertiesTask, project)
 

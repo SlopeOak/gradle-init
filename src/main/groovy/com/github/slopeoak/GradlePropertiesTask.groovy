@@ -1,6 +1,7 @@
 package com.github.slopeoak
 
 import groovy.io.FileType
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
@@ -14,6 +15,8 @@ class GradlePropertiesTask extends DefaultTask {
     @Inject
     GradlePropertiesTask(Project project) {
         this.project = project
+
+        dependsOn project.tasks.'project-names'
     }
 
     @TaskAction
@@ -30,20 +33,14 @@ class GradlePropertiesTask extends DefaultTask {
     def createPropertiesFile(File parent) {
         project.logger.info("Writing properties files under $parent")
         def propertiesFile = new File(parent, 'gradle.properties')
-        def relativeProjectName = "${folderProjectName(project.rootDir, parent)}"
-        project.logger.debug("Relative project from $project.rootDir to $parent is $relativeProjectName")
+
+        def pom = new MavenXpp3Reader().read(new File(parent, 'pom.xml').newReader())
+
+        project.logger.debug("ProjectMap: $project.projectMap")
+        def relativeProjectName = project.projectMap["${pom.groupId}:${pom.artifactId}".toString()].name
+        project.logger.debug("Relative project for ${"${pom.groupId}:${pom.artifactId}".toString()} is $relativeProjectName")
 
         project.logger.info("Creating a gradle.properties file at $parent/gradle.properties")
         propertiesFile.write("projectName=" + relativeProjectName)
-    }
-
-    static folderProjectName(File root, File projectDir) {
-        def relativePath = root.relativePath(projectDir)
-        StringBuilder builder = new StringBuilder()
-        relativePath.split('/').each {
-            builder.append(':')
-            builder.append(it)
-        }
-        builder.toString()
     }
 }
