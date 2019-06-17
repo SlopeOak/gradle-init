@@ -14,7 +14,7 @@ class ProjectNameTest extends Specification {
     def "Project name for path #paths is #expected"() {
         expect: 'project name for folder matches #expected'
             def subFolder = tempFolder.newFolder(paths)
-            InitTask.folderProjectName(tempFolder.root, subFolder) == expected
+            GradlePropertiesTask.folderProjectName(tempFolder.root, subFolder) == expected
 
         where:
             paths                                                  | expected
@@ -24,6 +24,6 @@ class ProjectNameTest extends Specification {
 
     def "Path to rootFolder is just :"() {
         expect: 'project name for folder matches #expected'
-            InitTask.folderProjectName(tempFolder.root, tempFolder.root) == ':'
+            GradlePropertiesTask.folderProjectName(tempFolder.root, tempFolder.root) == ':'
     }
 }
