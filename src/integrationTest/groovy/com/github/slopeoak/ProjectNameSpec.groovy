@@ -41,7 +41,7 @@ class ProjectNameSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments(':gradle-init')
+                    .withArguments('--debug', ':gradle-init')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/inRootDir'), tempFolder.root)
