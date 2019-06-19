@@ -18,7 +18,7 @@ class ProjectNameSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments(':gradle-init')
+                    .withArguments(':gradleInit')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/inRootDir'), tempFolder.root)
@@ -27,7 +27,7 @@ class ProjectNameSpec extends Specification {
             def outcome = plugin.build()
 
         then: 'the task was successful'
-            outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
+            outcome.task(':gradleInit').outcome == TaskOutcome.SUCCESS
 
         and: 'there is a gradle.properties file for each module'
             verifyAll {
@@ -41,7 +41,7 @@ class ProjectNameSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments('--debug', ':gradle-init')
+                    .withArguments('--debug', ':gradleInit')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/inRootDir'), tempFolder.root)
@@ -50,7 +50,7 @@ class ProjectNameSpec extends Specification {
             def outcome = plugin.build()
 
         then: 'the task was successful'
-            outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
+            outcome.task(':gradleInit').outcome == TaskOutcome.SUCCESS
 
         and: 'the name is in the gradle.properties file'
             verifyAll {

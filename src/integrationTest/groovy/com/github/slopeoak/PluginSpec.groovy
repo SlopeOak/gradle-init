@@ -16,7 +16,7 @@ class PluginSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments(':gradle-init')
+                    .withArguments(':gradleInit')
 
         and: 'the root project applies the plugin'
             def build = tempFolder.newFile('build.gradle')
@@ -30,6 +30,6 @@ class PluginSpec extends Specification {
             def outcome = plugin.build()
 
         then: 'the task was successful'
-            outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
+            outcome.task(':gradleInit').outcome == TaskOutcome.SUCCESS
     }
 }

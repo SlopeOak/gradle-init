@@ -9,6 +9,6 @@ class GradleInit implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.extensions.create('gradleInit', GradleInitExtensions)
-        project.tasks.create('gradle-init', InitTask, project)
+        project.tasks.create('gradleInit', InitTask, project)
     }
 }

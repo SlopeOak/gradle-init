@@ -19,7 +19,7 @@ class CreatesGradleProjectSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments(':gradle-init')
+                    .withArguments(':gradleInit')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/inRootDir'), tempFolder.root)
@@ -28,7 +28,7 @@ class CreatesGradleProjectSpec extends Specification {
             def outcome = plugin.build()
 
         then: 'the task was successful'
-            outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
+            outcome.task(':gradleInit').outcome == TaskOutcome.SUCCESS
 
         and: 'a build.gradle file exists in both folders'
             verifyAll {
@@ -42,7 +42,7 @@ class CreatesGradleProjectSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments('--debug', ':gradle-init')
+                    .withArguments('--debug', ':gradleInit')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/skipsIfItAlreadyExists'), tempFolder.root)
@@ -51,7 +51,7 @@ class CreatesGradleProjectSpec extends Specification {
             def outcome = plugin.build()
 
         then: 'the task was successful'
-            outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
+            outcome.task(':gradleInit').outcome == TaskOutcome.SUCCESS
 
         and: 'a build.gradle file exists in both folders'
             verifyAll {
@@ -65,7 +65,7 @@ class CreatesGradleProjectSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(tempFolder.root)
-                    .withArguments('--debug', ':gradle-init')
+                    .withArguments('--debug', ':gradleInit')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/overwritesIfExtensionEnabled'), tempFolder.root)
@@ -74,7 +74,7 @@ class CreatesGradleProjectSpec extends Specification {
             def outcome = plugin.build()
 
         then: 'the task was successful'
-            outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
+            outcome.task(':gradleInit').outcome == TaskOutcome.SUCCESS
 
         and: 'a build.gradle file exists in both folders'
             verifyAll {
@@ -102,7 +102,7 @@ class CreatesGradleProjectSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(projectRoot)
-                    .withArguments('--info', ':gradle-init')
+                    .withArguments('--info', ':gradleInit')
 
         and: 'the folder contains the test data'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/createProject/skipPomsInSrc'), testFolder)
@@ -111,7 +111,7 @@ class CreatesGradleProjectSpec extends Specification {
             def outcome = plugin.build()
 
         then: 'the task was successful'
-            outcome.task(':gradle-init').outcome == TaskOutcome.SUCCESS
+            outcome.task(':gradleInit').outcome == TaskOutcome.SUCCESS
 
         and: 'a build.gradle file exists in both folders'
             !new File(tempFolder.root, "${path.join('/')}/build.gradle").exists()
