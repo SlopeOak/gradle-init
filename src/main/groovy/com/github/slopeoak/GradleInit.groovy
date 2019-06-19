@@ -10,5 +10,7 @@ class GradleInit implements Plugin<Project> {
     void apply(Project project) {
         project.extensions.create('gradleInit', GradleInitExtensions)
         project.tasks.create('gradleInit', InitTask, project)
+
+        project.pluginManager.apply('com.github.slopeoak:project-writer')
     }
 }
