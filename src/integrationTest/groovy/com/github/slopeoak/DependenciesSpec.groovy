@@ -4,6 +4,7 @@ import org.codehaus.plexus.util.FileUtils
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import spock.lang.PendingFeature
 import spock.lang.Specification
 
 class DependenciesSpec extends Specification {
@@ -11,6 +12,7 @@ class DependenciesSpec extends Specification {
     @Rule
     TemporaryFolder tempFolder
 
+    @PendingFeature
     def "Compile dependency from pom copied to build gradle file"() {
         given: 'there is a project set up with the init plugin'
             FileUtils.copyDirectory(new File('src/integrationTest/resources/dependencies/externalDependencies'), tempFolder.root)

@@ -1,10 +1,3 @@
-task publishPluginToMavenLocal {
-    description = 'Publishes the plugin and the jar to maven local'
-    group = 'Publishing'
-    dependsOn build
-    dependsOn publishToMavenLocal
-}
-
 gradlePlugin {
     plugins {
         gradleInit {
@@ -26,3 +19,34 @@ pluginBundle {
         }
     }
 }
+//
+//publishing {
+//    publications {
+//        pluginMaven(MavenPublication) {
+//            pom {
+//                name = 'Gradle init plugin'
+//                description = 'Create a gradle project from a maven project'
+//                licenses {
+//                    license {
+//                        name = 'The Apache License, Version 2.0'
+//                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                    }
+//                }
+//                developers {
+//                    developer {
+//                        id = 'SlopeOak'
+//                        name = 'Stuart Sinclair'
+//                    }
+//                }
+//            }
+//
+////            pom.withXml {
+////                def root = asNode()
+////                def deps = root.dependencies
+////                deps.appendNode('groupId', 'com.github.slopeoak')
+////                deps.appendNode('artifactId', 'project-writer')
+////                deps.appendNode('version', '0.0.1')
+////            }
+//        }
+//    }
+//}

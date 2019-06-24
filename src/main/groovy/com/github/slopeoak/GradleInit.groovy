@@ -8,9 +8,9 @@ class GradleInit implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
+        project.plugins.apply(GradleProjectWriterPlugin)
+
         project.extensions.create('gradleInit', GradleInitExtensions)
         project.tasks.create('gradleInit', InitTask, project)
-
-        project.pluginManager.apply('com.github.slopeoak:project-writer')
     }
 }
