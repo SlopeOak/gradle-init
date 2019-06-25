@@ -1,6 +1,7 @@
 package com.github.slopeoak
 
 import com.github.slopeoak.extensions.GradleInitExtensions
+import com.github.slopeoak.tasks.InitTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

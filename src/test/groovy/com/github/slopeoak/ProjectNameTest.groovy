@@ -1,5 +1,6 @@
 package com.github.slopeoak
 
+import com.github.slopeoak.tasks.ProjectNameTask
 import org.gradle.internal.impldep.org.apache.commons.io.FileUtils
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule

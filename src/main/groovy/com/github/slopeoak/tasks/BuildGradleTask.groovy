@@ -1,4 +1,4 @@
-package com.github.slopeoak
+package com.github.slopeoak.tasks
 
 import groovy.io.FileType
 import org.gradle.api.DefaultTask

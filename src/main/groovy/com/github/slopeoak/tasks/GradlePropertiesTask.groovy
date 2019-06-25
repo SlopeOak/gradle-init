@@ -1,4 +1,4 @@
-package com.github.slopeoak
+package com.github.slopeoak.tasks
 
 import groovy.io.FileType
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader
@@ -16,7 +16,7 @@ class GradlePropertiesTask extends DefaultTask {
     GradlePropertiesTask(Project project) {
         this.project = project
 
-        dependsOn project.tasks.'project-names'
+        dependsOn project.tasks.'projectNames'
     }
 
     @TaskAction
