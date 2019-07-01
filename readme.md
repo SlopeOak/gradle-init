@@ -19,7 +19,7 @@ or shell script. But as tasks on a plugin, they can be thoroughly tested and run
 
 Besides, I needed an excuse to learn more gradle! What better way to learn than to write a plugin?
 
-## Does this support <XYZ> DSL?
+## Does this support _XYZ_ DSL?
 The current goal is to support maven to groovy-gradle-DSL. I have plans (and have designed the code to support) other
 DSL's being added.
 
