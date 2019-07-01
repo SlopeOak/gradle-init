@@ -1,0 +1,3 @@
+dependencies {
+    compile 'com.github.slopeoak:project-writer:0.0.1'
+}

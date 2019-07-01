@@ -25,7 +25,7 @@ class ConvertDependenciesTask extends DefaultTask {
 
         project.configurations.create('compile')
         mavenModel.dependencies.each {
-            project.dependencies.add('compile', 'com.github.slopeoak:gradle-plugin:0.0.1')
+            project.dependencies.add('compile', "$it.groupId:$it.artifactId:$it.version")
         }
     }
 }

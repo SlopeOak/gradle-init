@@ -35,9 +35,10 @@ class DependenciesSpec extends Specification {
             outcome.output.contains("convertDependencies - Adds the dependencies from the pom.xml file to the project model.")
     }
 
+    @Unroll
     def "Compile dependency from pom copied to build gradle file"() {
         given: 'there is a project set up with the init plugin'
-            FileUtils.copyDirectory(new File('src/integrationTest/resources/dependencies/externalDependencies'), tempFolder.root)
+            FileUtils.copyDirectory(new File(testFilePath), tempFolder.root)
             def projectRoot = tempFolder.root
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
@@ -55,6 +56,11 @@ class DependenciesSpec extends Specification {
                 outcome.task(':convertDependencies').outcome == TaskOutcome.SUCCESS
                 outcome.task(':writeProject').outcome == TaskOutcome.SUCCESS
             }
+
+        where:
+            testFilePath                                                               | _
+            'src/integrationTest/resources/dependencies/externalDependencies/example1' | _
+            'src/integrationTest/resources/dependencies/externalDependencies/example2' | _
     }
 
     @NotYetImplemented
