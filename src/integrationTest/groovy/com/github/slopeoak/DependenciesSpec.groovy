@@ -43,7 +43,7 @@ class DependenciesSpec extends Specification {
             def plugin = GradleRunner.create()
                     .withPluginClasspath()
                     .withProjectDir(projectRoot)
-                    .withArguments(':convertDependencies', ':writeProject')
+                    .withArguments('--stacktrace', ':convertDependencies', ':writeProject')
 
         when: 'the init task is run'
             def outcome = plugin.build()
