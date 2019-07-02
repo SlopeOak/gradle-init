@@ -1,6 +1,5 @@
 package com.github.slopeoak
 
-import groovy.transform.NotYetImplemented
 import org.gradle.internal.impldep.org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
@@ -169,5 +168,64 @@ class DependenciesSpec extends Specification {
             'testCompile' | 'test'    | 'org.spockframework'  | 'spock-core'     | '1.3-groovy-2.5'
 
             expectedDependency = "$configuration '$group:$name:$version'"
+    }
+
+    @Unroll
+    def "Dependency with targetConfiguration #type created for maven dependency with type #type"() {
+        given: 'there is a project set up with the init plugin'
+            def projectRoot = tempFolder.root
+            def plugin = GradleRunner.create()
+                    .withPluginClasspath()
+                    .withProjectDir(projectRoot)
+                    .withArguments(':convertDependencies', ':writeProject')
+
+        and: 'the directory contains a build file'
+            def build = tempFolder.newFile('build.gradle')
+            build << """
+                plugins {
+                    id 'com.github.slopeoak.gradle-init'
+                }
+            """
+
+        and: 'there is a pom with a dependency'
+            def pom = tempFolder.newFile('pom.xml')
+            pom << """
+                <project>
+                    <modelVersion>4.0.0</modelVersion>
+                    <groupId>com.github.slopeoak</groupId>
+                    <artifactId>somepom</artifactId>
+                    <version>0.0.1</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.slopeoak</groupId>
+                            <artifactId>project-writer</artifactId>
+                            <version>0.0.1</version>
+                            <type>$type</type>
+                        </dependency>
+                    </dependencies>
+                </project>
+            """
+
+        when: 'the init task is run'
+            def outcome = plugin.build()
+
+        then: 'the build.gradle file looks like expected-build.gradle'
+            new File(tempFolder.root, 'build.gradle').readLines().any {
+                it ==~ /(.*)$expectedDependency(.*)/
+            }
+
+        and: 'the task was successful'
+            verifyAll {
+                outcome.task(':convertDependencies').outcome == TaskOutcome.SUCCESS
+                outcome.task(':writeProject').outcome == TaskOutcome.SUCCESS
+            }
+
+        where:
+            type      | _
+            'all'     | _
+            'sources' | _
+            'javadoc' | _
+
+            expectedDependency = "compile\\(group: 'com.github.slopeoak', name: 'project-writer', version: '0.0.1', targetConfiguration: '$type'\\)"
     }
 }

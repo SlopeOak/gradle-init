@@ -23,11 +23,14 @@ class ConvertDependenciesTask extends DefaultTask {
         def pom = project.file('pom.xml')
         def mavenModel = new MavenXpp3Reader().read(pom.newReader())
 
-        mavenModel.dependencies.each {
-            def configs = scopeMap(it.scope)
+        mavenModel.dependencies.each { mvnDep ->
+            def configs = scopeMap(mvnDep.scope)
             configs.each { configName ->
                 project.configurations.create(configName)
-                project.dependencies.add(configName, "$it.groupId:$it.artifactId:$it.version")
+                def dep = project.dependencies.add(configName, "$mvnDep.groupId:$mvnDep.artifactId:$mvnDep.version")
+                if (mvnDep.type != null && mvnDep.type != 'jar') {
+                    dep.targetConfiguration = mvnDep.type
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.github.slopeoak
 
 import com.github.slopeoak.tasks.ConvertDependenciesTask
+import org.gradle.api.artifacts.ExternalDependency
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -106,5 +107,52 @@ class DependenciesTest extends Specification {
             ['testCompile']                | 'test'     | 'com.github.slopeoak' | 'project-writer' | '0.0.1'
             ['compileOnly', 'testCompile'] | 'provided' | 'com.github.slopeoak' | 'project-writer' | '0.0.1'
             ['runtime']                    | 'runtime'  | 'com.github.slopeoak' | 'project-writer' | '0.0.1'
+    }
+
+    @Unroll
+    def "Maven dependency with type #type becomes dependency with classifier #type"() {
+        given: 'there is some project'
+            def project = ProjectBuilder.builder()
+                    .withProjectDir(tempFolder.root)
+                    .build()
+
+        and: 'the project contains the dependencies task'
+            def task = project.tasks.create('convertDependencies', ConvertDependenciesTask, project)
+
+        and: 'there is a pom with a dependency'
+            def pom = tempFolder.newFile('pom.xml')
+            pom << """
+                <project>
+                    <modelVersion>4.0.0</modelVersion>
+                    <groupId>com.github.slopeoak</groupId>
+                    <artifactId>somepom</artifactId>
+                    <version>0.0.1</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.slopeoak</groupId>
+                            <artifactId>project-writer</artifactId>
+                            <version>0.0.1</version>
+                            <type>$type</type>
+                        </dependency>
+                    </dependencies>
+                </project>
+            """
+
+        when: 'the dependencies task is executed'
+            task.convertDependencies()
+
+        then: 'the project contains an equivalent external dependency'
+            project.configurations.compile.dependencies.any { ExternalDependency dependency ->
+                dependency.group == 'com.github.slopeoak'
+                dependency.name == 'project-writer'
+                dependency.version == '0.0.1'
+                dependency.targetConfiguration == type
+            }
+
+        where:
+            type      | _
+            'all'     | _
+            'sources' | _
+            'javadoc' | _
     }
 }
