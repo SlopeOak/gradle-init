@@ -24,9 +24,11 @@ class ConvertDependenciesTask extends DefaultTask {
         def mavenModel = new MavenXpp3Reader().read(pom.newReader())
 
         mavenModel.dependencies.each {
-            def configName = scopeMap(it.scope)
-            project.configurations.create(configName)
-            project.dependencies.add(configName, "$it.groupId:$it.artifactId:$it.version")
+            def configs = scopeMap(it.scope)
+            configs.each { configName ->
+                project.configurations.create(configName)
+                project.dependencies.add(configName, "$it.groupId:$it.artifactId:$it.version")
+            }
         }
     }
 
@@ -34,13 +36,19 @@ class ConvertDependenciesTask extends DefaultTask {
         def config
         switch (scope) {
             case 'compile':
-                config = 'compile'
+                config = ['compile']
                 break
             case 'test':
-                config = 'testCompile'
+                config = ['testCompile']
+                break
+            case 'runtime':
+                config = ['runtime']
+                break
+            case 'provided':
+                config = ['compileOnly', 'testCompile']
                 break
             default:
-                config = 'compile'
+                config = ['compile']
         }
         config
     }
